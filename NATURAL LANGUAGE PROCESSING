@@ -1,0 +1,52 @@
+import re
+
+# Step 1: Read and preprocess the text file
+file_path = r'D:\Downloads\final_corrected.txt'
+
+with open(file_path, 'r') as file:
+    text = file.read()
+
+# Step 2: Extract chapters and their titles
+# Using regular expressions to match chapter titles
+chapters = re.split(r'ADVENTURE\s+I\.\s+', text)
+chapter_titles = [
+    "A Scandal in Bohemia",
+    "The Red-Headed League",
+    "A Case of Identity",
+    "The Boscombe Valley Mystery",
+    "The Five Orange Pips",
+    "The Man with the Twisted Lip",
+    "The Adventure of the Blue Carbuncle",
+    "The Adventure of the Speckled Band",
+    "The Adventure of the Engineer's Thumb",
+    "The Adventure of the Noble Bachelor",
+    "The Adventure of the Beryl Coronet",
+    "The Adventure of the Copper Beeches"
+]
+
+# Ensure the first element is the header and remove it
+if chapters[0].strip().startswith("Copyright"):
+    chapters.pop(0)
+
+# Prefix chapter titles to their content
+chapters = [f"ADVENTURE {i+1}. {title}\n{chap}" for i, (title, chap) in enumerate(zip(chapter_titles, chapters))]
+
+# Step 3: Build recommendation logic
+def recommend_next_chapter(current_chapter):
+    for i, chapter in enumerate(chapters):
+        if current_chapter in chapter:
+            if i + 1 < len(chapters):
+                return chapters[i + 1]
+            else:
+                return "You have reached the end of the book."
+    return "Chapter not found."
+
+# Example usage
+current_chapter_title = "A Scandal in Bohemia"
+recommended_chapter = recommend_next_chapter(current_chapter_title)
+print(f"Recommended next chapter:\n{recommended_chapter}")
+
+# Optional: Save the recommended chapter to a file
+output_file = r'D:\Downloads\recommended_chapter.txt'
+with open(output_file, 'w') as file:
+    file.write(recommended_chapter)
